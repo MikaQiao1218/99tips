@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tip Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f8f8;
+            margin: 0;
+            position: relative;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .restaurant-image {
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            cursor: pointer; /* Cursor change for clickable image */
+        }
+        .tip-button, .custom-tip-button, .no-tip-button {
+            margin: 10px;
+            padding: 15px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: calc(30% - 20px);
+        }
+        .tip-button:hover, .custom-tip-button:hover, .no-tip-button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: green;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between; /* Space between buttons */
+            margin-top: 10px;
+        }
+        .percentage-buttons {
+            display: flex; /* Align percentage buttons in a row */
+            justify-content: space-between; /* Space between percentage buttons */
+            margin-bottom: 10px; /* Space below percentage buttons */
+        }
+        .full-width-button {
+            width: calc(48%); /* Adjusted width for No TIP and Custom buttons */
+        }
+        .large-button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .large-button {
+            padding: 50px 70px;
+            font-size: 72px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .large-button:hover {
+            background-color: #0056b3;
+        }
+        .navigation-button {
+            padding: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            position: absolute; /* Position absolute for side placement */
+            top: 50%;
+            transform: translateY(-50%); /* Center vertically */
+            display: none; /* Initially hidden */
+        }
+        .navigation-button.left {
+            left: -50px; /* Adjust left button position */
+        }
+        .navigation-button.right {
+            right: -50px; /* Adjust right button position */
+        }
+        .navigation-button:hover {
+            background-color: #0056b3;
+        }
+        .clickable-text {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline; /* Underline to indicate clickable text */
+        }
+        .clickable-text:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="main-container">
+        <img src="Picture1.png" alt="Coffee Shop" class="restaurant-image" onclick="toggleImage()">
+        
+        <h2>Please leave a tip</h2>
+        <div class="percentage-buttons">
+            <button class="tip-button" onclick="showOkMessage('15%')">15%</button>
+            <button class="tip-button" onclick="showOkMessage('18%')">18%</button>
+            <button class="tip-button" onclick="showOkMessage('25%')">25%</button>
+        </div>
+        <div class="button-group">
+            <button class="no-tip-button full-width-button" onclick="showBadTip()">NO TIP</button>
+            <button class="custom-tip-button full-width-button" onclick="showCustomTipPage()">CUSTOM</button>
+        </div>
+        <div id="result" class="message"></div>
+        
+        <button class="navigation-button left" onclick="changeImage(-1)">←</button>
+        <button class="navigation-button right" onclick="changeImage(1)">→</button>
+    </div>
+
+    <script>
+        let currentImageIndex = 0; // Index for the images
+        const images = ['Picture3.png', 'Picture4.png', 'Picture5.png', 'Picture6.png'];
+
+        function toggleImage() {
+            const imageElement = document.querySelector('.restaurant-image');
+            currentImageIndex = (currentImageIndex) % images.length; // Cycle through images
+            imageElement.src = images[currentImageIndex]; // Set the current image
+            
+            // Show navigation buttons
+            document.querySelector('.navigation-button.left').style.display = 'block';
+            document.querySelector('.navigation-button.right').style.display = 'block';
+       
+            // 仅在点击 Picture6.png 时返回主界面
+            if (imageElement.src.includes('Picture6.png')) {
+                imageElement.onclick = returnToMain;
+            } else {
+                imageElement.onclick = toggleImage; // 其他图片继续切换
+            }
+       
+        }
+
+        function showOkMessage(tip) {
+            document.getElementById('result').innerText = `OK, you chose a ${tip} tip.`;
+        }
+
+        function showCustomTipPage() {
+            document.body.innerHTML = `
+                <div class="large-button-container">
+                    <button class="large-button" onclick="submitCustomTip()">99%</button>
+                </div>
+            `;
+        }
+
+        function submitCustomTip() {
+            // 跳转到新的画面
+            document.body.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <img src="Picture1.png" alt="Thank You" style="max-width: 100%; height: auto;" onclick="returnToMain()">
+                    <h1 class="clickable-text" onclick="returnToMain()">THANK YOU</h1>
+                </div>
+            `;
+        }
+
+        function showBadTip() {
+            document.body.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <img src="Picture2.png" alt="Bad Tip" style="max-width: 100%; height: auto;" onclick="returnToMain()">
+                    <h1 class="clickable-text" onclick="returnToMain()">BAD TIP</h1>
+                </div>
+            `;
+        }
+
+        function returnToMain() {
+            document.body.innerHTML = `
+                <div class="container" id="main-container">
+                    <img src="Picture1.png" alt="Coffee Shop" class="restaurant-image" onclick="toggleImage()">
+                    
+                    <h2>Please leave a tip</h2>
+                    <div class="percentage-buttons">
+                        <button class="tip-button" onclick="showOkMessage('15%')">15%</button>
+                        <button class="tip-button" onclick="showOkMessage('18%')">18%</button>
+                        <button class="tip-button" onclick="showOkMessage('25%')">25%</button>
+                    </div>
+                    <div class="button-group">
+                        <button class="no-tip-button full-width-button" onclick="showBadTip()">NO TIP</button>
+                        <button class="custom-tip-button full-width-button" onclick="showCustomTipPage()">CUSTOM</button>
+                    </div>
+                    <div id="result" class="message"></div>
+                    
+                    <button class="navigation-button left" onclick="changeImage(-1)">←</button>
+                    <button class="navigation-button right" onclick="changeImage(1)">→</button>
+                </div>
+            `;
+            currentImageIndex = 0; // Reset to the first image
+            // Hide navigation buttons
+            document.querySelector('.navigation-button.left').style.display = 'none';
+            document.querySelector('.navigation-button.right').style.display = 'none';
+        }
+
+        function changeImage(direction) {
+            currentImageIndex = (currentImageIndex + direction + images.length) % images.length; // Update index
+            const imageElement = document.querySelector('.restaurant-image');
+            imageElement.src = images[currentImageIndex]; // Set the new image
+        }
+    </script>
+</body>
+</html>
